@@ -11,20 +11,35 @@
  */
 class Solution {
 public:
+    stack <TreeNode*> functionStack;
+    stack <string> stateStack;
+    void push(TreeNode* node, string state){
+        functionStack.push(node);
+        stateStack.push(state);
+    }
     vector<int> preorderTraversal(TreeNode* root) {
-        if(root == NULL) return {};
         vector<int> ans;
-        stack <TreeNode*> dfs;
-        dfs.push(root);
-        while(dfs.size()){
-            TreeNode* temp = dfs.top();
-            dfs.pop();
-            ans.push_back(temp -> val);
-            /**Wil be adding right node first and left afterwords
-            so that when we access the stack from top
-            the left node comes first followed by second*/
-            if(temp -> right) dfs.push(temp -> right);
-            if(temp -> left) dfs.push(temp -> left);
+        push(root, "root");
+        while(!functionStack.empty()){
+            TreeNode* current = functionStack.top();
+            functionStack.pop();
+            string state = stateStack.top();
+            stateStack.pop();
+            
+            if(current == NULL) continue;
+            
+            if(state == "root"){
+                push(current, "left");
+                ans.push_back(current -> val);
+            }
+            else if(state == "left"){
+                push(current, "right");
+                push(current -> left, "root");
+            }
+            else if(state == "right"){
+                push(current, "end");
+                push(current -> right, "root");
+            }
         }
         return ans;
     }
