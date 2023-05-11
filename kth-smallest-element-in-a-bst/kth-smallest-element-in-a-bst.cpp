@@ -11,15 +11,30 @@
  */
 class Solution {
 public:
-    void helper(vector <int> &nodes, TreeNode* root){
-        if(!root) return;
-        helper(nodes, root -> left);
-        nodes.push_back(root -> val);
-        helper(nodes, root -> right);
-    }
     int kthSmallest(TreeNode* root, int k) {
-        vector <int> nodes;
-        helper(nodes, root);
-        return nodes[k - 1];
+        int ans = 0, count = 0;
+        TreeNode* cur = root;
+        while(cur){
+            if(!cur -> left) {
+                count++;
+                if(count == k) ans = cur -> val;
+                cur = cur -> right;
+            }
+            else{
+                TreeNode* temp = cur -> left;
+                while(temp -> right and temp -> right != cur) temp = temp -> right;
+                if(!temp -> right){
+                    temp -> right = cur;
+                    cur = cur -> left;
+                }
+                else{
+                    temp -> right = NULL;
+                    count++;
+                    if(count == k) ans = cur -> val;
+                    cur = cur -> right;
+                }
+            }
+        }
+        return ans;
     }
 };
