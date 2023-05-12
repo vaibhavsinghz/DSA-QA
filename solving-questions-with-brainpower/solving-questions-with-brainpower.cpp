@@ -1,29 +1,14 @@
 #define ll long long
 class Solution {
 public:
-    vector<ll> dp;
-
-    ll solve(int i, vector<vector<int>>& que) {
-        if (i >= que.size()) {
-            return 0;
-        }
-
-        if (dp[i] != -1) {
-            return dp[i];
-        }
-
-        ll points = que[i][0];
-        int nextIndex = i + que[i][1] + 1;
-
-        ll chooseCurrent = points + solve(nextIndex, que);
-        ll skipCurrent = solve(i + 1, que);
-
-        return dp[i] = max(chooseCurrent, skipCurrent);
+    ll dp[100001];
+    ll solve(int i, vector<vector<int>>& que, int n){
+        if(i > n) return 0;
+        if(dp[i] != -1) return dp[i];
+        return dp[i] = max(que[i - 1][0] + solve(i + que[i - 1][1] + 1, que, n), solve(i + 1, que, n));
     }
-
     long long mostPoints(vector<vector<int>>& questions) {
-        int n = questions.size();
-        dp.resize(n, -1);
-        return solve(0, questions);
+        memset(dp, -1, sizeof dp);
+        return solve(1, questions, questions.size());
     }
 };
