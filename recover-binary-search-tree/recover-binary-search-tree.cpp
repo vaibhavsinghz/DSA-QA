@@ -11,26 +11,44 @@
  */
 class Solution {
 public:
-    void findodr(TreeNode* root, vector <int> &inodr){
-        if(!root) return;
-        findodr(root -> left, inodr);
-        inodr.push_back(root -> val);
-        findodr(root -> right, inodr);
-    }
-    int i = 0;
-    void recover(TreeNode* &root, vector <int> &inodr){
-        if(!root) return;
-        recover(root -> left, inodr);
-        if(root -> val != inodr[i]){
-            root -> val = inodr[i];
-        }
-        i++;
-        recover(root -> right, inodr);
-    }
     void recoverTree(TreeNode* root) {
-        vector <int> inodr;
-        findodr(root, inodr);
-        sort(inodr.begin(), inodr.end());
-        recover(root, inodr);
+        TreeNode* prev = NULL, *first = NULL, *mid = NULL, *last = NULL;
+        TreeNode* cur = root;
+        while(cur){
+            if(!cur -> left){
+                if(prev and cur -> val < prev -> val){
+                    if(!first){
+                        first = prev;
+                        mid = cur;
+                    }
+                    else last = cur;
+                }
+                prev = cur;
+                cur = cur -> right;
+            }
+            else{
+                TreeNode* temp = cur -> left;
+                while(temp -> right and temp -> right != cur) temp = temp -> right;
+                if(!temp -> right){
+                    temp -> right = cur;
+                    cur = cur -> left;
+                }
+                else{
+                    temp -> right = NULL;
+                    if(prev and cur -> val < prev -> val){
+                        if(!first){
+                            first = prev;
+                            mid = cur;
+                        }
+                        else last = cur;
+                    }
+                    prev = cur;
+                    cur = cur -> right;
+                }
+            }
+        }
+        cout << first -> val <<endl;
+        if(first and last) swap(first -> val, last -> val);
+        else if(first and mid) swap(first -> val, mid -> val);
     }
 };
