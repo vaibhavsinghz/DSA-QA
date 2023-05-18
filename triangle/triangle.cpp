@@ -1,13 +1,15 @@
 class Solution {
 public:
-    int dp[201][201];
-    int helper(int i, int j, vector<vector<int>>& tri){
-        if(i == tri.size()) return tri[i - 1][j - 1];
-        if(dp[i][j] != -1) return dp[i][j];
-        return dp[i][j] = min(helper(i + 1, j, tri), helper(i + 1, j + 1, tri)) + tri[i - 1][j - 1];
-    }
-    int minimumTotal(vector<vector<int>>& triangle) {
-        memset(dp, -1, sizeof dp);
-        return helper(1, 1, triangle);
+  int minimumTotal(vector<vector<int>>& tri) {
+        int n = tri.size();
+        int dp[n + 1][n + 1];
+        memset(dp, 0, sizeof dp);
+        for(int i = n; i > 0; --i){
+            for(int j = i; j > 0; --j){
+                if(i == n) dp[i][j] = tri[i - 1][j - 1];
+                else dp[i][j] = min(dp[i + 1][j], dp[i + 1][j + 1]) + tri[i - 1][j - 1];
+            }
+        }
+        return dp[1][1];
     }
 };
