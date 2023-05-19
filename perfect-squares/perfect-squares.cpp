@@ -1,21 +1,14 @@
 class Solution {
 public:
-    int dp[10001];
-    int helper(vector <int> &sq, int target){
-        if(target <= 0) return 0;
-        int ans = target;
-        if(dp[target] != -1) return dp[target];
-        for(int i = sq.size(); i > 0; --i){
-            if(target >= sq[i - 1]){
-                ans = min(ans, helper(sq, target - sq[i - 1]) + 1);
+   int numSquares(int n) {
+        vector <int> sqs, dp(n + 1, 10001);
+        dp[0] = 0;
+        for(int i = 1; i <= sqrt(n); i++) sqs.push_back(i * i);
+        for(int target = 1; target <= n; ++target){
+            for(auto sq: sqs){
+                if(target >= sq) dp[target] = min(dp[target], dp[target - sq] + 1);
             }
         }
-        return dp[target] = ans;
-    }
-    int numSquares(int n) {
-        vector <int> sq;
-        for(int i = 1; i <= sqrt(n); i++) sq.push_back(i * i);
-        memset(dp, -1, sizeof dp);
-        return helper(sq, n);
+        return dp[n]; 
     }
 };
