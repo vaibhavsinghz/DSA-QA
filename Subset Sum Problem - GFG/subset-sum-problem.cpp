@@ -10,22 +10,22 @@ using namespace std;
 class Solution{   
 public:
     int dp[101][10001];
-    int solve(int target, int i, vector<int> &arr){
-        if(target == 0) return 1;
-        if(i < 0 || target < 0) return 0;
-        if(dp[i][target] != -1) return dp[i][target];
-        int takeIt = solve(target - arr[i], i - 1, arr);
-        int discardIt = solve(target, i - 1, arr);
-        return dp[i][target] = takeIt || discardIt;   
+    bool helper(vector<int> &arr, int sum, int i){
+        if(sum == 0) return true;
+        if(i < 0 || sum < 0) return false;
+        if(dp[i][sum] != -1) return dp[i][sum];
+        bool take = 0, noTake = 0;
+        noTake = helper(arr, sum, i - 1);
+        take = helper(arr, sum - arr[i], i - 1);
+        return dp[i][sum] = take || noTake;
         
     }
     bool isSubsetSum(vector<int>arr, int sum){
-        if(sum > 10000) return false;
         // code here 
+        if(sum > 10000) return false;
         memset(dp, -1, sizeof dp);
         int n = arr.size();
-        return solve(sum, n - 1, arr);
-        
+        return helper(arr, sum, n - 1);
     }
 };
 
